@@ -31,15 +31,29 @@ Edit `values.yaml` to customize:
 - `config.gateway.controlUi.allowedOrigins` - CORS origins
 - `config.browser.enabled` - Enable/disable browser (default: false)
 - `skills` - List of skills to install
-- `env` - Environment variables (e.g., ANTHROPIC_API_KEY)
 - `resources` - CPU/memory limits
 
-## Example: Add environment variables
+## API Keys
+
+OpenClaw requires API keys for AI providers. Provide them via environment variables:
 
 ```yaml
 env:
-  ANTHROPIC_API_KEY: "your-key-here"
-  OPENAI_API_KEY: "your-key-here"
+  ANTHROPIC_API_KEY: "sk-ant-..."
+  # or
+  OPENAI_API_KEY: "sk-..."
+```
+
+**Recommended:** Use Kubernetes secrets instead of hardcoding:
+
+```bash
+kubectl create secret generic openclaw-secrets \
+  --from-literal=ANTHROPIC_API_KEY=sk-ant-...
+
+# Then reference in values.yaml:
+envFrom:
+  - secretRef:
+      name: openclaw-secrets
 ```
 
 ## Example: Add more skills
