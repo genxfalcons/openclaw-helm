@@ -35,21 +35,22 @@ Edit `values.yaml` to customize:
 
 ## AI Provider Authentication
 
-OpenClaw supports OAuth-based onboarding for AI providers (OpenAI, Anthropic, etc.). Users authenticate through the OpenClaw UI rather than providing API keys directly.
+**This chart deploys OpenClaw without pre-configured AI providers.** After installation, users must complete OAuth onboarding:
 
-For development/testing, you can optionally provide API keys via environment variables:
+1. Install the chart:
+   ```bash
+   helm install openclaw oci://ghcr.io/thepagent/openclaw-helm --version 1.0.1
+   ```
 
-```yaml
-env:
-  ANTHROPIC_API_KEY: "sk-ant-..."
-```
+2. Access the OpenClaw UI and complete OAuth onboarding for your preferred AI provider (OpenAI, Anthropic, etc.)
 
-Or use Kubernetes secrets:
+3. OpenClaw will securely store OAuth tokens and manage authentication
 
-```bash
-kubectl create secret generic openclaw-secrets \
-  --from-literal=ANTHROPIC_API_KEY=sk-ant-...
-```
+This approach ensures:
+- No API keys in configuration files
+- Secure OAuth-based authentication
+- Per-user provider authorization
+- Easy provider switching through the UI
 
 ## Example: Add more skills
 
