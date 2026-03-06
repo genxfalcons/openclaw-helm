@@ -102,14 +102,15 @@ jobs:
         if: steps.check.outputs.skip != 'true'
         run: git diff
         
-      - name: Commit and push
+      - name: Commit, tag and push
         if: steps.check.outputs.skip != 'true' && inputs.dry_run != true
         run: |
           git config user.name "thepagent"
           git config user.email "thepagent@users.noreply.github.com"
           git add Chart.yaml values.yaml
           git commit -m "chore: bump OpenClaw to ${{ steps.get-version.outputs.version }}"
-          git push
+          git tag "v${{ steps.new-version.outputs.new_version }}"
+          git push && git push --tags
           
       - name: Set up Helm
         if: steps.check.outputs.skip != 'true' && inputs.dry_run != true
@@ -126,8 +127,7 @@ jobs:
       - name: Package and push chart
         if: steps.check.outputs.skip != 'true' && inputs.dry_run != true
         run: |
-          helm package .
-          helm push openclaw-helm-${{ steps.new-version.outputs.new_version }}.tgz oci://ghcr.io/${{ github.repository_owner }}
+          echo "Skipping chart push - will be handled by release workflow"
           
       - name: Dry run summary
         if: steps.check.outputs.skip != 'true' && inputs.dry_run == true
