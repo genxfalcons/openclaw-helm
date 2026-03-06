@@ -70,20 +70,29 @@ spec:
         - containerPort: 18789
           protocol: TCP
         livenessProbe:
-          tcpSocket:
-            port: 18789
+          exec:
+            command:
+            - sh
+            - -c
+            - "curl -f http://127.0.0.1:18789/ || exit 1"
           initialDelaySeconds: 30
           periodSeconds: 30
           timeoutSeconds: 5
         readinessProbe:
-          tcpSocket:
-            port: 18789
+          exec:
+            command:
+            - sh
+            - -c
+            - "curl -f http://127.0.0.1:18789/ || exit 1"
           initialDelaySeconds: 10
           periodSeconds: 10
           timeoutSeconds: 5
         startupProbe:
-          tcpSocket:
-            port: 18789
+          exec:
+            command:
+            - sh
+            - -c
+            - "curl -f http://127.0.0.1:18789/ || exit 1"
           initialDelaySeconds: 5
           periodSeconds: 5
           timeoutSeconds: 5
