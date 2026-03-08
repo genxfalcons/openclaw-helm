@@ -33,7 +33,7 @@ This chart is designed with three core principles:
 After installing the chart, run the OpenClaw onboarding wizard to configure your AI provider:
 
 ```bash
-kubectl exec -it deployment/openclaw-openclaw-helm -c main -- node dist/index.js onboard
+kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw onboard
 ```
 
 This interactive wizard will guide you through:
@@ -44,6 +44,18 @@ This interactive wizard will guide you through:
 - Optional: Skills installation
 
 Your configuration will be stored in the pod's persistent volume.
+
+### Configure Channels (e.g. Telegram)
+
+To configure channels after onboarding:
+
+```bash
+# Enter the container
+kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw configure --section channels
+
+# Approve a pairing request
+kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw pairing approve telegram *******
+```
 
 ### Alternative: API Key via Secret
 
