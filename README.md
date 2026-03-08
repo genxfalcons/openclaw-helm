@@ -33,7 +33,7 @@ This chart is designed with three core principles:
 After installing the chart, run the OpenClaw onboarding wizard to configure your AI provider:
 
 ```bash
-kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw onboard
+sudo kubectl exec -it deployment/openclaw-openclaw-helm -n openclaw -c main -- openclaw onboard
 ```
 
 This interactive wizard will guide you through:
@@ -51,10 +51,10 @@ To configure channels after onboarding:
 
 ```bash
 # Enter the container
-kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw configure --section channels
+sudo kubectl exec -it deployment/openclaw-openclaw-helm -n openclaw -c main -- openclaw configure --section channels
 
 # Approve a pairing request
-kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw pairing approve telegram *******
+sudo kubectl exec -it deployment/openclaw-openclaw-helm -n openclaw -c main -- openclaw pairing approve telegram *******
 ```
 
 ### Alternative: API Key via Secret
@@ -62,7 +62,7 @@ kubectl exec -it deployment/openclaw-openclaw-helm -c main -- openclaw pairing a
 If you prefer to skip the wizard and use API keys directly:
 
 ```bash
-kubectl create secret generic openclaw-api-key \
+sudo kubectl create secret generic openclaw-api-key \
   --from-literal=OPENAI_API_KEY=sk-...
 ```
 
@@ -83,8 +83,8 @@ helm upgrade openclaw oci://ghcr.io/thepagent/openclaw-helm -f values.yaml
 ### Verify Setup
 
 ```bash
-POD=$(kubectl get pod -l app.kubernetes.io/name=openclaw-helm -o jsonpath='{.items[0].metadata.name}')
-kubectl exec $POD -- openclaw models status
+POD=$(sudo kubectl get pod -n openclaw -l app.kubernetes.io/name=openclaw-helm -o jsonpath='{.items[0].metadata.name}')
+sudo kubectl exec -n openclaw $POD -- openclaw models status
 ```
 
 ## Uninstall
