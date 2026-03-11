@@ -73,6 +73,11 @@ skills:
   - weather
   - gog
 
+gateway:
+  token:
+    generate: true    # auto-generate gateway token Secret on install, retained on uninstall
+    secretName: ""    # override secret name if generate=false
+
 env: {}
   # EXAMPLE_VAR: "value"
 
