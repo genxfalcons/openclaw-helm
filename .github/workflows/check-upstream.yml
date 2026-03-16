@@ -32,7 +32,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      packages: write
     steps:
       - uses: actions/checkout@v4
       - name: Get latest OpenClaw version
@@ -113,8 +112,7 @@ jobs:
           git remote set-url origin https://x-access-token:${PAT}@github.com/${{ github.repository }}
           git add charts/openclaw-helm/Chart.yaml charts/openclaw-helm/values.yaml
           git commit -m "chore: bump OpenClaw to ${{ steps.get-version.outputs.version }}"
-          git tag "v${{ steps.new-version.outputs.new_version }}"
-          git push && git push --tags
+          git push
       # Packaging, OCI push, GitHub Release, and gh-pages index are all handled by release.yml
       - name: Dry run summary
         if: steps.check.outputs.skip != 'true' && inputs.dry_run == true
