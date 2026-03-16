@@ -32,9 +32,10 @@ jobs:
         uses: helm/chart-releaser-action@v1.6.0
         with:
           skip_existing: true
-          charts_repo_url: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          charts_dir: .
         env:
           CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CR_INDEX_PATH: index.yaml
 
       - name: Append OCI install instructions to release notes
         env:
@@ -45,6 +46,12 @@ jobs:
           VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
           NAME=$(grep '^name:' Chart.yaml | awk '{print $2}')
           TAG="${NAME}-${VERSION}"
+
+          # Skip if release does not exist (e.g. skipped by chart-releaser)
+          if ! gh release view "${TAG}" --repo "${OWNER}/${REPO}" > /dev/null 2>&1; then
+            echo "Release ${TAG} not found, skipping notes update."
+            exit 0
+          fi
 
           cat > /tmp/release-notes-append.md << EOF
 
