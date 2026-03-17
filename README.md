@@ -131,6 +131,24 @@ POD=$(sudo kubectl get pod -n openclaw -l app.kubernetes.io/name=openclaw-helm -
 sudo kubectl exec -n openclaw $POD -- openclaw models status
 ```
 
+## Mount Host `~/.openclaw` into the Pod
+
+If you are running on a single-node setup (e.g. k3s with `local-path` StorageClass), you can symlink your host `~/.openclaw` to the PVC data directory so the pod and host share the same config, sessions, and skills.
+
+```bash
+# Find the PVC's actual host path
+PV_PATH=$(kubectl get pv \
+  $(kubectl get pvc openclaw-openclaw-helm -n openclaw -o jsonpath='{.spec.volumeName}') \
+  -o jsonpath='{.spec.hostPath.path}')
+
+echo "PVC is at: $PV_PATH"
+
+# Symlink ~/.openclaw on the host to the PVC path
+ln -sf "$PV_PATH" ~/.openclaw
+```
+
+> **Note:** This works only with local StorageClasses (e.g. k3s `local-path`) where the PV has a real host path. It does not apply to NFS, EBS, or other remote storage backends.
+
 ## Backup
 
 Before upgrading or making changes, backup your OpenClaw configuration:
