@@ -234,6 +234,8 @@ Share these docs with your AI agent and ask it to implement the scripts for your
 
 Use standard Kubernetes scheduling fields to control where the OpenClaw pod runs:
 
+All three fields — `nodeSelector`, `tolerations`, and `affinity` — are independent. You can use any of them individually or combine them as needed.
+
 ```yaml
 nodeSelector:
   disktype: ssd
@@ -253,6 +255,12 @@ affinity:
               operator: In
               values:
                 - us-east-1a
+```
+
+Add the fields you need to your `values.yaml` and apply during install or upgrade:
+
+```bash
+helm upgrade openclaw oci://ghcr.io/thepagent/openclaw-helm -n openclaw -f values.yaml
 ```
 
 ## Example: Add more skills
