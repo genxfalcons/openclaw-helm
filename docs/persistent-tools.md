@@ -62,6 +62,28 @@ Simply tell OpenClaw:
 
 OpenClaw will run the command, capture the one-time code and URL, and send them to you via Telegram or Discord so you can authorize from your phone.
 
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   You (Telegram/Discord)                    │
+│  "Log in to gh using device flow and send me the link"      │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    OpenClaw (K8s Pod)                       │
+│                                                             │
+│  1. Runs CLI login with device flow                         │
+│  2. Captures one-time code + URL                            │
+│  3. Sends back to you via Telegram/Discord                  │
+└─────────────────────────┬───────────────────────────────────┘
+                          │  "Visit https://... and enter ABC-1234"
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                       You (Phone)                           │
+│   Open URL → Enter code → Authorize ✓                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
 ## Summary
 
 | ✅ Persisted | ❌ Not Persisted |
