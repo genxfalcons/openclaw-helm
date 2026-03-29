@@ -68,13 +68,13 @@ jobs:
 
           cat > /tmp/release-notes-append.md << EOF
 
-          ## 版本資訊
+          ## Version Info
           - Chart Version: ${VERSION}
           - App Version: ${APP_VERSION}
 
-          ## 安裝方式
+          ## Installation
 
-          ### Helm Repository（GitHub Pages）
+          ### Helm Repository (GitHub Pages)
           \`\`\`bash
           helm repo add openclaw https://${OWNER}.github.io/${REPO}
           helm repo update
