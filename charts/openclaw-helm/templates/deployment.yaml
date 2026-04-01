@@ -6,6 +6,16 @@ metadata:
     {{- include "openclaw-helm.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicas }}
+  {{- with .Values.strategy }}
+  strategy:
+    {{- toYaml . | nindent 4 }}
+  {{- else }}
+  {{- /* strategy: {} or null falls through with-guard;
+         default to Recreate because RWO PVCs cause
+         Multi-Attach errors during RollingUpdate upgrades */ -}}
+  strategy:
+    type: Recreate
+  {{- end }}
   selector:
     matchLabels:
       {{- include "openclaw-helm.selectorLabels" . | nindent 6 }}
@@ -16,9 +26,13 @@ spec:
       labels:
         {{- include "openclaw-helm.selectorLabels" . | nindent 8 }}
     spec:
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       initContainers:
       - name: init-config
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ include "openclaw-helm.image" . }}"
         command:
         - sh
         - -c
@@ -58,7 +72,7 @@ spec:
           mountPath: /tmp
       
       - name: init-skills
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ include "openclaw-helm.image" . }}"
         command:
         - sh
         - -c
@@ -67,7 +81,7 @@ spec:
           cd /home/node/.openclaw/workspace
           {{- range .Values.skills }}
           if [ ! -d "skills/{{ . }}" ]; then
-            npx -y clawhub install "{{ . }}" --no-input || true
+            npx -y clawhub install "{{ . }}" --no-input || echo "[WARN] Failed to install skill: {{ . }}"
           fi
           {{- end }}
         env:
@@ -83,7 +97,7 @@ spec:
       
       containers:
       - name: main
-        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        image: "{{ include "openclaw-helm.image" . }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         command:
         - node
@@ -155,7 +169,13 @@ spec:
         - name: bash-aliases
           mountPath: /home/node/.bash_aliases
           subPath: bash_aliases
-      
+        {{- with .Values.extraVolumeMounts }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+      {{- with .Values.extraContainers }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
@@ -180,3 +200,6 @@ spec:
           claimName: {{ include "openclaw-helm.fullname" . }}
       - name: tmp
         emptyDir: {}
+      {{- with .Values.extraVolumes }}
+        {{- toYaml . | nindent 6 }}
+      {{- end }}
