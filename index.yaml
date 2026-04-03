@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  openclaw-helm:
+  - apiVersion: v2
+    appVersion: 2026.4.2
+    created: "2026-04-03T12:28:17.864383+08:00"
+    description: OpenClaw AI Agent (custom chart without chromium)
+    digest: 71198f4090cfe900e9440ca71f870f8a0dcbee0d293ab088fef4000fe615e1fe
+    name: openclaw-helm
+    type: application
+    urls:
+    - https://genxfalcons.github.io/openclaw-helm/openclaw-helm-1.5.4.tgz
+    version: 1.5.4
+generated: "2026-04-03T12:28:17.863927+08:00"
